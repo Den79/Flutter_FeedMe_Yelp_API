@@ -28,7 +28,11 @@ class _LoadingScreenState extends State<LoadingScreen> {
               itemBuilder: (context, index) {
                 return Column(
                   children: <Widget>[
-                    Container(
+                    GestureDetector(
+                      onTap: (){
+                        print("TAP!");
+                      },
+                      child :Container(
                       height: 120.0,
                       width: 120.0,
                       decoration: new BoxDecoration(
@@ -38,6 +42,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
                         ),
                         shape: BoxShape.circle,
                       ),
+                    ),
                     ),
                     Card(
                       child: Text('${snapshot.data[index].name}'),

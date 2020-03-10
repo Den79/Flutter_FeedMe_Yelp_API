@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'dart:convert';
@@ -8,12 +9,12 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
 
   void fetchBusinessList() async {
+    await DotEnv().load('.env');
     var response = await http.get(
       'https://api.yelp.com/v3/businesses/search' +
           "?&latitude=49.2820&longitude=-123.1171",
       headers: {
-        HttpHeaders.authorizationHeader:
-        "Bearer 4zMnFkShrFprc0JizCA_WEWIWRxHsHcx8wN5iSqu5AK83N8Oq7SEgjD7ufj06yanMrVdkK3F7N1qqsJ8YAyut0QnQqLKHkdajixrebOG1Pbmq9ICHU5872jpf41hXnYx"
+        HttpHeaders.authorizationHeader: "Bearer ${DotEnv().env['API_KEY']}"
       },
     );
     print(json.decode(response.body));

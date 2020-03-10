@@ -10,7 +10,18 @@ class LoadingScreen extends StatefulWidget {
   _LoadingScreenState createState() => _LoadingScreenState();
 }
 class _LoadingScreenState extends State<LoadingScreen> {
-  void fetchBusinessList() async {
+  // Future variable
+  Future<String>_futureData;
+
+  @override
+  void initState() {
+    super.initState();
+    // hit API and assign value ONCE when widget is added to the tree
+    _futureData = _fetchBusinessList();
+  }
+
+  // returns a Future asynchronously
+  Future<String> _fetchBusinessList() async {
     await DotEnv().load('.env');
     Location location = new Location();
     await location.getLocation();
@@ -21,20 +32,24 @@ class _LoadingScreenState extends State<LoadingScreen> {
         HttpHeaders.authorizationHeader: "Bearer ${DotEnv().env['API_KEY']}"
       },
     );
-    print(json.decode(response.body));
-  }
-  
-  @override
-  void initState() {
-    super.initState();
-    fetchBusinessList();
+    // later we will return a collection of Businesses
+    return "SUCCESS!";
   }
 
+  // render the future to the screen via FutureBuilder
   @override
   Widget build (BuildContext context){
     // TODO: implement build
-    return Center(
-      child: Text("Loading Screen")
-    );
+    return FutureBuilder<String>(
+      future: _futureData,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Text(snapshot.data);
+        } else if (snapshot.hasError) {
+          return Text(snapshot.error);
+        }
+        // default show a loading spinner
+        return CircularProgressIndicator();
+      });
   }
 }
